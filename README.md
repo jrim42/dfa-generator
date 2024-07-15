@@ -21,12 +21,14 @@ _A python package generating DFA and its graph from protein sequence (and UTR se
   ```
   pip install .
   ```
-- 이후에는 다음의 명령어와 옵션으로 실행가능합니다. 이미지를 포함한 결과 파일 `test` 디렉토리에 저장됩니다.
+- 이후에는 root에서 다음의 명령어와 옵션으로 실행가능합니다.
   
   ```
   dfa-gen [PROTEIN_SEQUENCE] [OPTIONS]
   ```
-- options
+- 이미지를 포함한 결과 파일들은 `./result` 디렉토리에 저장됩니다.
+  
+### 4. options
   1.  `--utr` 옵션을 사용하면 nucleotide sequence를 넘겨줄 수 있습니다. (default: empty string)
      
       ```
@@ -36,8 +38,9 @@ _A python package generating DFA and its graph from protein sequence (and UTR se
      
       ```
       --lambda_val [LAMBDA] or -l [LAMBDA]
-      ```
+      ``` 
 - example
+  
   ```
   dfa-gen METFWPLPAW -u UGGACGA
   dfa-gen "MEFA" -l 3 -u UGGACGA
