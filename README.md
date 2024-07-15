@@ -6,6 +6,9 @@ _A python package generating DFA and its graph from protein sequence (and UTR se
 - protein sequence와 utr을 입력하면 [LinearDesign](https://github.com/LinearDesignSoftware/LinearDesign)에서 사용할 수 있는 DFA를 생성하고 이를 시각화한 graph를 생성합니다.
 - 본 package로 만들어진 DFA는 <U>수정된 LinearDesign 프로그램에서만</U> 사용할 수 있습니다. (WIP)
 - graph 예시 이미지 (`dfa-gen "MA" -l 3 -u UGGACGA`의 결과)
+  - `green node`: protein sequence
+  - `blue node`: 3'UTR sequence
+  - `red node`: stop codon or last node
   
   ![dfa_MA_graph](https://github.com/user-attachments/assets/ebf9782f-fdd3-48e3-9c43-2d2451b283ef)
 
