@@ -1,6 +1,8 @@
 import argparse
 import pandas as pd
 import graphviz
+import os
+
 from dfa_gen.dfa_class import Codon, DFA, NodeType
 from dfa_gen.dfa_util import utr_to_aa, convert_aa_to_triple
 from dfa_gen.generate_lattice import prepare_codon_unit_lattice
@@ -35,10 +37,12 @@ def dfa_generator(seq, utr="", lambda_val=0):
     SEQ = seq
     UTR = utr
     LAMBDA_VAL = lambda_val
-    DFA_FILE = f"test/dfa_{SEQ}"
+    
+    os.makedirs("result", exist_ok=True)
+    DFA_FILE = f"result/dfa_{SEQ}"
 
-    CODON_TABLE = "./data/codon_freq_table.tsv"
-    CODING_WHEEL = "./data/coding_wheel.txt"
+    CODON_TABLE = "dfa_gen/data/codon_freq_table.tsv"
+    CODING_WHEEL = "dfa_gen/data/coding_wheel.txt"
 
     codon_table = pd.read_csv(CODON_TABLE, sep='\t')
     utr_trimmed = UTR[:len(UTR) - (len(UTR) % 3)]
