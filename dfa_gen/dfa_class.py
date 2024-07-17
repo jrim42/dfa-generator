@@ -1,5 +1,5 @@
 from collections import defaultdict, namedtuple
-from dfa_gen.dfa_util import get_ACGU_num
+from dfa_gen.dfa_util import get_ACGU_char
 import csv
 
 NodeType = namedtuple("NodeType", ["index", "num"])
@@ -109,8 +109,8 @@ class DFA:
                 print(f"node:\t({node.index}, {node.num})", file=file)
                 if node in self.right_edges:
                     for cnt, edge in enumerate(self.right_edges[node], 1):
-                        print(f"R_{cnt}:\t{get_ACGU_num(edge.nuc)};{edge.weight};({edge.node.index}, {edge.node.num})", file=file)
+                        print(f"R_{cnt}:\t{get_ACGU_char(edge.nuc)};{edge.weight};({edge.node.index}, {edge.node.num})", file=file)
                 if node in self.left_edges:
                     for cnt, edge in enumerate(self.left_edges[node], 1):
-                        print(f"L_{cnt}:\t{get_ACGU_num(edge.nuc)};{edge.weight};({edge.node.index}, {edge.node.num})", file=file)
+                        print(f"L_{cnt}:\t{get_ACGU_char(edge.nuc)};{edge.weight};({edge.node.index}, {edge.node.num})", file=file)
                 print("%", file=file)

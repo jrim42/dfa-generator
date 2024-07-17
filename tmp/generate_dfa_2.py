@@ -8,10 +8,9 @@ from dfa_gen.dfa_util import get_ACGU_char, utr_to_aa, convert_aa_to_triple
 from dfa_gen.generate_lattice import prepare_codon_unit_lattice
 from dfa_gen.dfa_to_graph import read_dfa_contents, node_map_to_tsv, generate_graphviz_code
 
-def get_dfa(aa_graphs, protein, utr_trimmed):
+def get_dfa(aa_graphs, protein):
     dfa = DFA()
     newnode = NodeType(3 * len(protein), 0)
-    is_utr = -1
 
     dfa.add_node(newnode)
 
@@ -30,27 +29,16 @@ def get_dfa(aa_graphs, protein, utr_trimmed):
                     nuc = edge.nuc
                     num = n2.num
                     newn2 = NodeType(i3 + pos + 1, num)
-                    if is_utr == -1:
-                        dfa.add_edge(newnode, newn2, nuc, round(edge.weight * 100, 3))
-                    elif is_utr < len(utr_trimmed):
-                        if utr_trimmed[is_utr] == get_ACGU_char(nuc):
-                            dfa.add_edge(newnode, newn2, nuc, 0)
-                            # dfa.add_edge(newnode, newn2, nuc, round(edge.weight * 100, 3))
-                        # else:
-                            # dfa.add_edge(newnode, newn2, nuc, -1)
-            if is_utr > -1:
-                is_utr += 1
-        if aa == "STOP":
-            is_utr = 0
+                    dfa.add_edge(newnode, newn2, nuc, round(edge.weight * 100, 3))
     return dfa
 
-def dfa_generator(seq, utr="", lambda_val=0, output="untitled"):
+def dfa_generator(seq, utr="", lambda_val=0):
     SEQ = seq
     UTR = utr
     LAMBDA_VAL = lambda_val
     
     os.makedirs("result", exist_ok=True)
-    DFA_FILE = f"result/{output}"
+    DFA_FILE = f"result/dfa_{SEQ}"
 
     CODON_TABLE = "dfa_gen/data/codon_freq_table.tsv"
     CODING_WHEEL = "dfa_gen/data/coding_wheel.txt"
@@ -58,6 +46,7 @@ def dfa_generator(seq, utr="", lambda_val=0, output="untitled"):
     codon_table = pd.read_csv(CODON_TABLE, sep='\t')
     utr_trimmed = UTR[:len(UTR) - (len(UTR) % 3)]
     utr_aa = utr_to_aa(utr_trimmed, codon_table)
+    
 
     if UTR != "" and SEQ[-1] != '*':
         SEQ = SEQ + '*'
@@ -68,7 +57,7 @@ def dfa_generator(seq, utr="", lambda_val=0, output="untitled"):
     
     aa_tri_seq = convert_aa_to_triple(aa_seq)
     protein = aa_tri_seq.split()
-    dfa = get_dfa(aa_graphs_with_ln_weights, protein, utr_trimmed)
+    dfa = get_dfa(aa_graphs_with_ln_weights, protein)
 
     with open(f"{DFA_FILE}.txt", 'w') as f:
         f.write(f"{SEQ}\n")
@@ -95,10 +84,9 @@ def main():
     parser.add_argument("seq", type=str, help="The amino acid sequence")
     parser.add_argument("-u", "--utr", type=str, default="", help="The 3'UTR sequence")
     parser.add_argument("-l", "--lambda_val", type=float, default=0, help="The lambda value for calculating edge weight")
-    parser.add_argument("-o", "--output", type=str, default="untitled", help="The name of output files")
 
     args = parser.parse_args()
-    dfa_generator(args.seq, args.utr, args.lambda_val, args.output)
+    dfa_generator(args.seq, args.utr, args.lambda_val)
 
 if __name__ == "__main__":
     main()

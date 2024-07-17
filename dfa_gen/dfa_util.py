@@ -21,8 +21,8 @@ def utr_to_aa(utr_seq, codon_table):
 
     return utr_aa
 
-def get_ACGU_num(x):
+def get_ACGU_char(x):
     return 'A' if x == 1 else 'C' if x == 2 else 'G' if x == 3 else 'U' if x == 4 else 'X'
 
-def get_ACGU_num_nuc(x):
+def get_ACGU_num(x):
     return 1 if x == 'A' else 2 if x == 'C' else 3 if x == 'G' else 4 if x == 'U' else 0

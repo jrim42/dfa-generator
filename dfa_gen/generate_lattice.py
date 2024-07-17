@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dfa_gen.dfa_class import NodeType, Lattice
-from dfa_gen.dfa_util import get_ACGU_num_nuc
+from dfa_gen.dfa_util import get_ACGU_num
 import math
 
 ### Lattice construction -------------------------------------------------------
@@ -41,7 +41,7 @@ def read_wheel_with_weights(filename, nodes_with_best_weight, edges_with_best_we
                 if first != last_first:
                     n1 = NodeType(1, i)
                     graph.add_node(n1)
-                    first_num = get_ACGU_num_nuc(first)
+                    first_num = get_ACGU_num(first)
                     weight = 0.0
                     if NodeType(0, 0) in nodes_with_best_weight.get(aa, {}):
                         weight = edges_with_best_weight[aa][(NodeType(0, 0), first_num, n1)] / nodes_with_best_weight[aa][NodeType(0, 0)]
@@ -50,7 +50,7 @@ def read_wheel_with_weights(filename, nodes_with_best_weight, edges_with_best_we
                     n1 = NodeType(1, i-1)
 
                 last_first = first
-                second_num = get_ACGU_num_nuc(second)
+                second_num = get_ACGU_num(second)
                 weight = 0.0
 
                 if n1 in nodes_with_best_weight.get(aa, {}):
@@ -64,7 +64,7 @@ def read_wheel_with_weights(filename, nodes_with_best_weight, edges_with_best_we
                         weight = codon.get_weight(aa, three_nums) / nodes_with_best_weight[aa][n2]
                     else:
                         weight = codon.get_weight(aa, three_nums)
-                    graph.add_edge(n2, NodeType(0, 0), get_ACGU_num_nuc(third), weight)
+                    graph.add_edge(n2, NodeType(0, 0), get_ACGU_num(third), weight)
 
                 i += 1
             aa_graphs[aa] = graph
@@ -118,7 +118,7 @@ def read_wheel_with_weights_log(filename, nodes_with_best_weight, edges_with_bes
                 if first != last_first:
                     n1 = NodeType(1, i)
                     graph.add_node(n1)
-                    first_num = get_ACGU_num_nuc(first)
+                    first_num = get_ACGU_num(first)
                     weight = 1.0
                     if NodeType(0, 0) in nodes_with_best_weight.get(aa, {}):
                         weight = lambda_ * math.log(edges_with_best_weight[aa][(NodeType(0, 0), first_num, n1)] / nodes_with_best_weight[aa][NodeType(0, 0)])
@@ -127,7 +127,7 @@ def read_wheel_with_weights_log(filename, nodes_with_best_weight, edges_with_bes
                     n1 = NodeType(1, i-1)
 
                 last_first = first
-                second_num = get_ACGU_num_nuc(second)
+                second_num = get_ACGU_num(second)
                 weight = 1.0
                 if n1 in nodes_with_best_weight.get(aa, {}):
                     weight = lambda_ * math.log(edges_with_best_weight[aa][(n1, second_num, n2)] / nodes_with_best_weight[aa][n1])
@@ -140,7 +140,7 @@ def read_wheel_with_weights_log(filename, nodes_with_best_weight, edges_with_bes
                         weight = lambda_ * math.log(codon.get_weight(aa, three_nums) / nodes_with_best_weight[aa][n2])
                     else:
                         weight = lambda_ * math.log(codon.get_weight(aa, three_nums))
-                    graph.add_edge(n2, NodeType(0, 0), get_ACGU_num_nuc(third), weight)
+                    graph.add_edge(n2, NodeType(0, 0), get_ACGU_num(third), weight)
 
                 i += 1
             aa_graphs[aa] = graph
