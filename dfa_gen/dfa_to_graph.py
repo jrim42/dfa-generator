@@ -99,7 +99,7 @@ def generate_graphviz_code(df):
         graph_code.append(f'    "{node_id}" [label="{node_id}\\n{node_aa}", shape={node_default["shape"]}, style={node_default["style"]}, color={node_color}];')
 
     last_node_id = df['node_id'].unique()[-1]
-    graph_code.append(f'    "{last_node_id}" [color=darksalmon];\n')
+    graph_code.append(f'    "{last_node_id}" [color=darkgoldenrod1];\n')
     
     for _, row in df[df['direction'] == 'right'].iterrows():
         edge_label = f'{row["base"]}:{row["weight"]}'

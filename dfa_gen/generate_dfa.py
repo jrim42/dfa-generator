@@ -40,11 +40,11 @@ def get_dfa(aa_graphs, protein, utr_trimmed):
                             # dfa.add_edge(newnode, newn2, nuc, -1)
             if is_utr > -1:
                 is_utr += 1
-        if aa == "STOP":
+        if aa == "STOP" and is_utr == -1:
             is_utr = 0
     return dfa
 
-def dfa_generator(seq, utr="", lambda_val=0, output="untitled"):
+def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
     SEQ = seq
     UTR = utr
     LAMBDA_VAL = lambda_val
@@ -69,6 +69,10 @@ def dfa_generator(seq, utr="", lambda_val=0, output="untitled"):
     aa_tri_seq = convert_aa_to_triple(aa_seq)
     protein = aa_tri_seq.split()
     dfa = get_dfa(aa_graphs_with_ln_weights, protein, utr_trimmed)
+
+    with open(f"{DFA_FILE}.faa", 'w') as f:
+        f.write(f">{output}\n")
+        f.write(f"{aa_seq}\n")
 
     with open(f"{DFA_FILE}.txt", 'w') as f:
         f.write(f"{SEQ}\n")
