@@ -37,7 +37,7 @@ def get_dfa(aa_graphs, protein, utr_trimmed):
                             dfa.add_edge(newnode, newn2, nuc, 0)
                             # dfa.add_edge(newnode, newn2, nuc, round(edge.weight * 100, 3))
                         # else:
-                            # dfa.add_edge(newnode, newn2, nuc, -1)
+                            # dfa.add_edge(newnode, newn2, nuc, 0)
             if is_utr > -1:
                 is_utr += 1
         if aa == "STOP" and is_utr == -1:
@@ -45,15 +45,16 @@ def get_dfa(aa_graphs, protein, utr_trimmed):
     return dfa
 
 def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
+    FILE_PATH = str(os.path.abspath(__file__))[:-15]
     SEQ = seq
     UTR = utr
     LAMBDA_VAL = lambda_val
     
-    os.makedirs("result", exist_ok=True)
-    DFA_FILE = f"result/{output}"
+    os.makedirs(f"result", exist_ok=True)
+    DFA_FILE = f"result/{output}_lam_{int(lambda_val)}"
 
-    CODON_TABLE = "dfa_gen/data/codon_freq_table.tsv"
-    CODING_WHEEL = "dfa_gen/data/coding_wheel.txt"
+    CODON_TABLE = f"{FILE_PATH}/data/codon_freq_table.tsv"
+    CODING_WHEEL = f"{FILE_PATH}/data/coding_wheel.txt"
 
     codon_table = pd.read_csv(CODON_TABLE, sep='\t')
     utr_trimmed = UTR[:len(UTR) - (len(UTR) % 3)]
@@ -71,7 +72,7 @@ def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
     dfa = get_dfa(aa_graphs_with_ln_weights, protein, utr_trimmed)
 
     with open(f"{DFA_FILE}.faa", 'w') as f:
-        f.write(f">{output}\n")
+        f.write(f">{output}_lam_{int(lambda_val)}\n")
         f.write(f"{aa_seq}\n")
 
     with open(f"{DFA_FILE}.txt", 'w') as f:
