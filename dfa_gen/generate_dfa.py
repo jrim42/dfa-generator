@@ -50,8 +50,8 @@ def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
     UTR = utr
     LAMBDA_VAL = lambda_val
     
-    os.makedirs(f"result", exist_ok=True)
-    DFA_FILE = f"result/{output}_lam_{int(lambda_val)}"
+    os.makedirs(f"output", exist_ok=True)
+    DFA_FILE = f"output/{output}_lam_{int(lambda_val)}"
 
     CODON_TABLE = f"{FILE_PATH}/data/codon_freq_table.tsv"
     CODING_WHEEL = f"{FILE_PATH}/data/coding_wheel.txt"
@@ -71,29 +71,24 @@ def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
     protein = aa_tri_seq.split()
     dfa = get_dfa(aa_graphs_with_ln_weights, protein, utr_trimmed)
 
-    with open(f"{DFA_FILE}.faa", 'w') as f:
-        f.write(f">{output}_lam_{int(lambda_val)}\n")
-        f.write(f"{aa_seq}\n")
+    print(f"{SEQ}")
+    print(f"{utr_trimmed}")
+    print(f"{aa_seq}")
+    dfa.print()
 
-    with open(f"{DFA_FILE}.txt", 'w') as f:
-        f.write(f"{SEQ}\n")
-        f.write(f"{utr_trimmed}\n")
-        f.write(f"{aa_seq}\n")
-        dfa.print(f)
-        
-    with open(f"{DFA_FILE}.txt", 'r') as file:
-        SEQ = file.readline().strip()
-        UTR = file.readline().strip()
-        dfa_input_seq = file.readline().strip()
-        dfa_contents = file.read()
+    # with open(f"{DFA_FILE}.txt", 'r') as file:
+    #     SEQ = file.readline().strip()
+    #     UTR = file.readline().strip()
+    #     dfa_input_seq = file.readline().strip()
+    #     dfa_contents = file.read()
 
-    node_map = read_dfa_contents(dfa_contents)
-    node_map_to_tsv(dfa_input_seq, utr_trimmed, node_map, f"{DFA_FILE}.tsv")
+    # node_map = read_dfa_contents(dfa_contents)
+    # node_map_to_tsv(dfa_input_seq, utr_trimmed, node_map, f"{DFA_FILE}.tsv")
 
-    df = pd.read_csv(f"{DFA_FILE}.tsv", sep='\t')
-    graphviz_code = generate_graphviz_code(df)
-    dot = graphviz.Source(graphviz_code)
-    dot.render(f'{DFA_FILE}_graph', format='png')
+    # df = pd.read_csv(f"{DFA_FILE}.tsv", sep='\t')
+    # graphviz_code = generate_graphviz_code(df)
+    # dot = graphviz.Source(graphviz_code)
+    # dot.render(f'{DFA_FILE}_graph', format='png')
 
 def main():
     parser = argparse.ArgumentParser(description="Generate DFA from sequence")
