@@ -2,6 +2,7 @@ import argparse
 import pandas as pd
 import graphviz
 import os
+import io
 
 from dfa_gen.dfa_class import Codon, DFA, NodeType
 from dfa_gen.dfa_util import get_ACGU_char, utr_to_aa, convert_aa_to_triple
@@ -44,7 +45,7 @@ def get_dfa(aa_graphs, protein, utr_trimmed):
             is_utr = 0
     return dfa
 
-def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
+def dfa_generator(seq, utr, lambda_val=0, output="untitled", visualize=False):
     FILE_PATH = str(os.path.abspath(__file__))[:-15]
     SEQ = seq
     UTR = utr
@@ -76,19 +77,18 @@ def dfa_generator(seq, utr, lambda_val=0, output="untitled"):
     print(f"{aa_seq}")
     dfa.print()
 
-    # with open(f"{DFA_FILE}.txt", 'r') as file:
-    #     SEQ = file.readline().strip()
-    #     UTR = file.readline().strip()
-    #     dfa_input_seq = file.readline().strip()
-    #     dfa_contents = file.read()
+    if visualize:
+        with io.StringIO() as buf:
+            dfa.print(buf)
+            dfa_contents = buf.getvalue()
 
-    # node_map = read_dfa_contents(dfa_contents)
-    # node_map_to_tsv(dfa_input_seq, utr_trimmed, node_map, f"{DFA_FILE}.tsv")
+        node_map = read_dfa_contents(dfa_contents)
+        node_map_to_tsv(aa_seq, utr_trimmed, node_map, f"{DFA_FILE}.tsv")
 
-    # df = pd.read_csv(f"{DFA_FILE}.tsv", sep='\t')
-    # graphviz_code = generate_graphviz_code(df)
-    # dot = graphviz.Source(graphviz_code)
-    # dot.render(f'{DFA_FILE}_graph', format='png')
+        df = pd.read_csv(f"{DFA_FILE}.tsv", sep='\t')
+        graphviz_code = generate_graphviz_code(df)
+        dot = graphviz.Source(graphviz_code)
+        dot.render(f'{DFA_FILE}_graph', format='png')
 
 def main():
     parser = argparse.ArgumentParser(description="Generate DFA from sequence")
@@ -96,9 +96,10 @@ def main():
     parser.add_argument("-u", "--utr", type=str, default="", help="The 3'UTR sequence")
     parser.add_argument("-l", "--lambda_val", type=float, default=0, help="The lambda value for calculating edge weight")
     parser.add_argument("-o", "--output", type=str, default="untitled", help="The name of output files")
+    parser.add_argument("-v", "--visualize", default=False, help=".")
 
     args = parser.parse_args()
-    dfa_generator(args.seq, args.utr, args.lambda_val, args.output)
+    dfa_generator(args.seq, args.utr, args.lambda_val, args.output, args.visualize)
 
 if __name__ == "__main__":
     main()
