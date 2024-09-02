@@ -72,10 +72,11 @@ def dfa_generator(seq, utr, lambda_val=0, output="untitled", visualize=False):
     protein = aa_tri_seq.split()
     dfa = get_dfa(aa_graphs_with_ln_weights, protein, utr_trimmed)
 
-    print(f"{SEQ}")
-    print(f"{utr_trimmed}")
-    print(f"{aa_seq}")
-    dfa.print()
+    with open(f'{DFA_FILE}.txt', 'w') as f:
+        print(f"{SEQ}", file=f)
+        print(f"{utr_trimmed}", file=f)
+        print(f"{aa_seq}", file=f)
+        dfa.print(file=f)
 
     if visualize:
         with io.StringIO() as buf:
